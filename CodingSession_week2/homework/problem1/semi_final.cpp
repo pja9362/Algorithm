@@ -4,7 +4,7 @@
 using namespace std;
  
  
-void bfs(pair<int, int> input[], int size){
+void bfs(pair<int,int> input[],int size, int *cnt){
     
     int dx[] = {1,2,2,1,-1,-2,-2,-1};
     int dy[] = {2,1,-1,-2,-2,-1,1,2};
@@ -29,8 +29,10 @@ void bfs(pair<int, int> input[], int size){
         
         if(x == input[1].first && y == input[1].second){
 
-            cout << arr[x][y] << '\n';
-            
+//            cout << arr[x][y] << '\n';
+
+            *cnt = arr[x][y];
+
             while(!q.empty()){
                 q.pop();
             }
@@ -52,20 +54,34 @@ void bfs(pair<int, int> input[], int size){
     }
 }
  
-int main(int argc, const char * argv[]) {
+int main(int argc, char * argv[]) {
+    FILE *inputFile = fopen(argv[1], "r");
+    if(inputFile == NULL)
+        printf("ERROR\n");
+
     int n;
+    int srcX, srcY, dstX, dstY;
+
+    fscanf(inputFile, "%d", &n);
+    fscanf(inputFile, "%d %d", &srcX, &srcY);
+    fscanf(inputFile, "%d %d", &dstX, &dstY);
+    fclose(inputFile);
+
     // input(0) : 출발지, input(1) : 도착지
     pair<int, int> input[2];
 
-    cin >> n; // 체스판 사이즈
-    // cin >> srcX >> srcY >> dstX >> dstY;
-    for(int i=0; i<2; i++){
-        int x,y; cin >> x >> y;
-        input[i].first = x;
-        input[i].second = y;
-    }
+    input[0].first = srcX;
+    input[0].second = srcY;
+    input[1].first = dstX;
+    input[1].second = dstY;
 
-    bfs(input, n);
+    int cnt=0;
+    int *ptr =&cnt;
+    bfs(input, n, ptr);
+
+    FILE *outputFile = fopen(argv[2], "w");
+    fprintf(outputFile, "%d", cnt);
+    fclose(outputFile);
 
 
     return 0;
