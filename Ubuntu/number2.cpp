@@ -6,6 +6,7 @@
 
 using namespace std;
 
+// Evaluate Postfix expression using Stack
 double EvalPostfix(char* postExp)
 {
 	stack<double> dstack;
@@ -13,55 +14,54 @@ double EvalPostfix(char* postExp)
     char *p = postExp;
     int len =strlen(p);
 
-    double result;
-	double op1,op2;
+    double result;  // value to contain the results of operations
+	double op1,op2; 
 
 	while(*p)
 	{
+        // 1) 숫자인 경우 (number)
 		if(isdigit(*p))
 		{   
-            result =atof(p);
+            result = atof(p); // convert type (char* to int)
             dstack.push(result);
-            printf("result 값 출력 %f\n",  result);
             for(;isdigit(*p);p++) {;};
 		} 
-
+        // 2) 연산자인 경우 (+ - * /)
         else {
             if((*p=='+')||(*p=='-')||(*p=='*')||(*p=='/'))
             {
-                // 피연산자
+                // 피연산자(number) stack에서 number 차례로 pop
                 op2 = dstack.top(); dstack.pop();
                 op1 = dstack.top(); dstack.pop();
 
+                // Using switch statement to calculate each case according to *p value
+                // switch문을 활용하여 연산자에 따라 각각의 연산 수행
                 switch(*p)
                 {
                     case '+' :
-                        // printf("덧셈 결과: %f + %f = %f\n", op1,op2,op1+op2);
                         dstack.push(op1+op2);
                         p++;
                         break;
                     case '-' :
-                        // printf("뺄셈 결과: %f\n", op1-op2);
                         dstack.push(op1-op2);
                         p++;
                         break;
                     case '*' :
-                        // printf("곱셈 결과: %f x %f = %f\n", op1,op2,op1*op2);
                         dstack.push(op1*op2);
                         p++;
                         break;
                     case '/' :
-                        // printf("나눗셈 결과: %f\n", op1/op2);
                         dstack.push(op1/op2);
                         p++;
                         break;
                 }	
             }
+            // 3) 기타 (etc ex. ' '(space))
             else  
                 p++;
         }
 	}
-
+    // Repeat pop until the stack is empty, and update the result
     if(!dstack.empty()) {
         result = dstack.top(); dstack.pop();
     }
@@ -69,6 +69,7 @@ double EvalPostfix(char* postExp)
 	return result;
 }
 
+// 연산자간 우선순위 비교
 // Compare Priority using operator precedence
 int GetPriority(char op)
 {
@@ -118,7 +119,7 @@ void InfixToPostfix(char *arr, char *convArr) {
         // 3) 괄호인 경우 (parenthesis)
         else if (*infix =='(')
             stack.push(*infix++);
-        // if *infix value is ')', repeat "pop" until the '(' appears
+        // if *infix value is ')', repeat "pop" until the '(' appears.
         // * 닫는 괄호일 때, 여는 괄호가 나올 때까지 계속 pop
         else if (*infix == ')') {
             while(stack.top()!='('){
@@ -146,19 +147,19 @@ int main(int argc, char** argv)
     if(inputFile == NULL)
         printf("ERROR\n");
 	
-	char input[100];
-	char convExp[100]={0,};
+	char input[100]; // Input : infix expression
+	char convExp[100]={0,}; // to contain converted expression (Infix to Postfix)
 
-	double total;
+	double total;   // to contain the results of operations
 
     fscanf(inputFile, "%s", input);
     fclose(inputFile);
-	InfixToPostfix(input, convExp);
+	InfixToPostfix(input, convExp); // call function to convert expression(infix to postfix)
 
-    total = EvalPostfix(convExp);
+    total = EvalPostfix(convExp);   // call function to evaluate the postfix expression
 
     FILE *outputFile = fopen(argv[2], "w");
-    fprintf(outputFile, "%.2lf", total);
+    fprintf(outputFile, "%.2lf", total);    // "%.2lf" to provide result to the second decimal place by rounding off
     fclose(outputFile);
 
 	return 0;

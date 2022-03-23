@@ -11,8 +11,8 @@ void BFS(pair<int,int> input[],int n, int *cnt){
     int moveX[] = {1,2,2,1,-1,-2,-2,-1};
     int moveY[] = {2,1,-1,-2,-2,-1,1,2};
 
-    int arr[20][20]; // 체스판 (길이 최대 20x20) (board size NxN, 4<=N<=20)
-    bool visited[20][20]; // 체스판 개별 칸 방문 여부 
+    int arr[20][20]; // board size NxN, 4<=N<=20 [체스판 (길이 최대 20x20)]
+    bool visited[20][20]; // 체스판 개별 칸 방문 여부 (check the position we visit or not)
 
     memset(arr, 0, sizeof(arr));
     memset(visited, false, sizeof(visited));
@@ -25,7 +25,7 @@ void BFS(pair<int,int> input[],int n, int *cnt){
     visited[input[0].first][input[0].second] = true;
 
     while(!q.empty()){
-        // x,y : 현위치 (now position), newX,newY : 이동위치 (new position)
+        // x,y : now position, newX,newY : new position
         int x,y,newX,newY;
 
         x = q.front().first;
@@ -33,7 +33,7 @@ void BFS(pair<int,int> input[],int n, int *cnt){
 
         q.pop();
 
-        // 도착지에 도달했다면 (reach the destination)
+        // if we reach the destination
         if(x == input[1].first && y == input[1].second){
 
             *cnt = arr[x][y];
@@ -51,13 +51,13 @@ void BFS(pair<int,int> input[],int n, int *cnt){
             
             if(newX >= 0 && newX < n && newY >= 0 && newY < n){
                 if(visited[newX][newY] == false){
-                    visited[newX][newY] = true; // 신규 방문 -> 방문 표시 (false to true)
+                    visited[newX][newY] = true; // change the value from false to true (신규 방문 -> 방문 표시 )
                     arr[newX][newY] = arr[x][y] + 1;
-                    q.push(make_pair(newX, newY)); // 위치 업데이트해서 큐에 push (push "updated postion")
+                    q.push(make_pair(newX, newY)); // push the "updated postion"
                 }
             }
         }
-        // 도착할 수 없는 위치 -> -1 출력 (if the destination is unreachable, output -1)
+        // if the destination is unreachable, output -1
         *cnt = -1;
     }
 }
@@ -75,7 +75,8 @@ int main(int argc, char * argv[]) {
     fscanf(inputFile, "%d %d", &finalX, &finalY);
     fclose(inputFile);
 
-    // input(0) : 출발지(start position), input(1) : 도착지(final position)
+    // input(0) : start position, input(1) : final position
+    // first -> X / secont -> Y
     pair<int, int> input[2];
 
     input[0].first = startX;
@@ -84,7 +85,7 @@ int main(int argc, char * argv[]) {
     input[1].second = finalY;
 
     int cnt=0; // to count the number of Kight's move
-    int *ptr =&cnt;
+    int *ptr =&cnt; 
     BFS(input, size, ptr);
 
     FILE *outputFile = fopen(argv[2], "w");
